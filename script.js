@@ -741,3 +741,558 @@ data
 
 
 update();
+// ==========================
+// PROPERTY SYSTEM
+// ==========================
+
+
+
+function loadProperties(){
+
+
+let container =
+document.getElementById("propertyContainer");
+
+
+let selector =
+document.getElementById("propertySelect");
+
+
+
+if(!container || !selector)
+return;
+
+
+
+container.innerHTML="";
+
+selector.innerHTML =
+"<option>Select Property</option>";
+
+
+
+properties.forEach((property,index)=>{
+
+
+container.innerHTML += `
+
+
+<div class="property-card 
+${property.mortgaged ? "property-mortgaged":""}">
+
+
+<h3>${property.name}</h3>
+
+<p>Type:
+${property.colour || property.type}
+</p>
+
+<p>Value:
+$${property.price}
+</p>
+
+<p>
+Owner:
+${property.owner || "Bank"}
+</p>
+
+<p>
+Status:
+${property.mortgaged ? 
+"Mortgaged":
+"Active"}
+</p>
+
+
+</div>
+
+
+`;
+
+
+
+selector.innerHTML += `
+
+<option value="${index}">
+${property.name}
+</option>
+
+`;
+
+
+
+});
+
+
+}
+
+
+
+
+
+
+function selectedProperty(){
+
+
+let index =
+Number(
+document.getElementById(
+"propertySelect"
+).value
+);
+
+
+
+return properties[index];
+
+
+}
+
+
+
+
+
+
+
+// GIVE PROPERTY
+
+
+function giveProperty(){
+
+
+let property =
+selectedProperty();
+
+
+let owner =
+document.getElementById(
+"propertyOwner"
+).value;
+
+
+
+if(!property || !owner)
+return;
+
+
+
+let player =
+players.find(
+p=>p.name===owner
+);
+
+
+
+if(!player)
+return;
+
+
+
+// remove old owner
+
+if(property.owner){
+
+
+let old =
+players.find(
+p=>p.name===property.owner
+);
+
+
+if(old){
+
+old.properties =
+old.properties.filter(
+x=>x!==property.name
+);
+
+}
+
+}
+
+
+
+
+
+property.owner =
+player.name;
+
+
+
+player.properties.push(
+property.name
+);
+
+
+
+updatePropertyValue();
+
+
+logEvent(
+player.name+
+" received "+
+property.name
+);
+
+
+
+update();
+
+
+loadProperties();
+
+
+}
+
+
+
+
+
+
+
+
+
+// MORTGAGE
+
+
+function mortgageProperty(){
+
+
+let property =
+selectedProperty();
+
+
+if(!property)
+return;
+
+
+
+if(property.mortgaged)
+return;
+
+
+
+property.mortgaged=true;
+
+
+
+let player =
+players.find(
+p=>p.name===property.owner
+);
+
+
+
+if(player){
+
+
+player.cash +=
+property.mortgage;
+
+
+}
+
+
+
+logEvent(
+property.name+
+" was mortgaged"
+);
+
+
+
+update();
+
+
+loadProperties();
+
+
+}
+
+
+
+
+
+
+
+
+
+// REMOVE MORTGAGE
+
+
+function removeMortgage(){
+
+
+let property =
+selectedProperty();
+
+
+
+if(!property)
+return;
+
+
+
+if(!property.mortgaged)
+return;
+
+
+
+let player =
+players.find(
+p=>p.name===property.owner
+);
+
+
+
+if(player){
+
+
+player.cash -=
+property.mortgage * 1.1;
+
+
+}
+
+
+
+property.mortgaged=false;
+
+
+
+logEvent(
+property.name+
+" mortgage removed"
+);
+
+
+
+update();
+
+
+loadProperties();
+
+
+}
+
+
+
+
+
+
+
+
+
+// LIQUIDATE
+
+
+function liquidateProperty(){
+
+
+let property =
+selectedProperty();
+
+
+
+if(!property)
+return;
+
+
+
+let player =
+players.find(
+p=>p.name===property.owner
+);
+
+
+
+if(player){
+
+
+player.properties =
+player.properties.filter(
+x=>x!==property.name
+);
+
+
+
+player.cash +=
+property.price / 2;
+
+
+}
+
+
+
+property.owner=null;
+
+property.mortgaged=false;
+
+
+
+logEvent(
+property.name+
+" was liquidated"
+);
+
+
+
+updatePropertyValue();
+
+
+update();
+
+
+loadProperties();
+
+
+}
+
+
+
+
+
+
+
+
+
+// AUCTION
+
+
+function auctionProperty(){
+
+
+let property =
+selectedProperty();
+
+
+
+if(!property)
+return;
+
+
+
+let winner =
+prompt(
+"Winner name:"
+);
+
+
+
+let player =
+players.find(
+p=>p.name===winner
+);
+
+
+
+let price =
+Number(
+prompt(
+"Winning bid:"
+)
+);
+
+
+
+if(!player)
+return;
+
+
+
+player.cash-=price;
+
+
+property.owner=
+player.name;
+
+
+player.properties.push(
+property.name
+);
+
+
+
+logEvent(
+player.name+
+" won auction for "+
+property.name+
+" ($"+
+price+
+")"
+);
+
+
+
+update();
+
+
+loadProperties();
+
+
+}
+
+
+
+
+
+
+
+
+
+// UPDATE PROPERTY VALUE
+
+
+function updatePropertyValue(){
+
+
+players.forEach(player=>{
+
+
+let total=0;
+
+
+player.properties.forEach(name=>{
+
+
+let property =
+properties.find(
+p=>p.name===name
+);
+
+
+if(property){
+
+total+=property.price;
+
+}
+
+
+});
+
+
+player.propertyValue=total;
+
+
+});
+
+
+}
+
+
+
+
+
+
+
+
+// START PROPERTY LOADING
+
+
+setTimeout(()=>{
+
+
+loadProperties();
+
+
+},500);
