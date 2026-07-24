@@ -1,233 +1,346 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>HyndaiCustomerCare-Debug | Portfolio</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Star Wars Monopoly Global Survival</title>
 
-<style>
-*{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
-}
-
-body{
-    font-family:Arial, Helvetica, sans-serif;
-    color:white;
-    background:linear-gradient(-45deg,#0f172a,#1e293b,#111827,#312e81);
-    background-size:400% 400%;
-    animation:bg 12s ease infinite;
-}
-
-@keyframes bg{
-    0%{background-position:0% 50%;}
-    50%{background-position:100% 50%;}
-    100%{background-position:0% 50%;}
-}
-
-header{
-    text-align:center;
-    padding:80px 20px;
-}
-
-header h1{
-    font-size:55px;
-    margin-bottom:15px;
-}
-
-header p{
-    color:#d1d5db;
-    font-size:20px;
-}
-
-.button{
-    display:inline-block;
-    margin:15px;
-    padding:14px 28px;
-    border-radius:10px;
-    text-decoration:none;
-    background:#2563eb;
-    color:white;
-    transition:.25s;
-}
-
-.button:hover{
-    transform:translateY(-3px);
-    background:#3b82f6;
-}
-
-section{
-    max-width:1100px;
-    margin:auto;
-    padding:60px 20px;
-}
-
-h2{
-    font-size:34px;
-    margin-bottom:25px;
-}
-
-.card-grid{
-    display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
-    gap:25px;
-}
-
-.card{
-    background:rgba(255,255,255,.08);
-    backdrop-filter:blur(10px);
-    border-radius:16px;
-    padding:25px;
-    transition:.3s;
-}
-
-.card:hover{
-    transform:translateY(-8px);
-}
-
-.card h3{
-    margin-bottom:15px;
-}
-
-.skills{
-    display:flex;
-    flex-wrap:wrap;
-    gap:12px;
-}
-
-.skill{
-    background:#2563eb;
-    padding:10px 18px;
-    border-radius:30px;
-}
-
-footer{
-    text-align:center;
-    padding:40px;
-    color:#cbd5e1;
-}
-
-code{
-    background:#0f172a;
-    display:block;
-    padding:15px;
-    margin-top:15px;
-    border-radius:10px;
-    overflow:auto;
-    color:#22c55e;
-    white-space:pre-wrap;
-}
-</style>
-
+    <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
 <header>
+    <h1>⭐ Star Wars Monopoly Global Survival ⭐</h1>
+    <h2>Classic Trilogy Edition</h2>
 
-<h1>HyndaiCustomerCare-Debug</h1>
-
-<p>Python Developer • Godot Developer • Learning Web Development</p>
-
-<a class="button" href="https://github.com/hyndaicustomercare-debug" target="_blank">GitHub</a>
-
-<a class="button" href="#projects">Projects</a>
-
+    <div id="turnDisplay">
+        Turn: <span id="turnNumber">1</span>
+        <button onclick="endTurn()">END TURN</button>
+    </div>
 </header>
 
-<section>
 
-<h2>About Me</h2>
+<main>
 
-<p>
-Hi! I'm a programmer who enjoys creating projects with Python,
-experimenting with Godot, and learning web development.
-This website is my portfolio where I share my projects and what I'm learning.
-</p>
 
-</section>
+<!-- GRAPH SECTION -->
+<section class="panel graph-panel">
 
-<section id="projects">
+    <h2>📈 Player Value History</h2>
 
-<h2>Projects</h2>
-
-<div class="card-grid">
-
-<div class="card">
-
-<h3>🐍 Python Battle System Code/h3>
-
-<p>
-A battle system function for text based python rpg
-</p>
-
-</div>
-
-<div class="card">
-
-<h3>🎮 Godot Experiments</h3>
-
-<p>
-Learning GDScript, 3D game development, camera controls,
-and creating small game prototypes.
-</p>
-
-</div>
-
-<div class="card">
-
-<h3>🌐 This Website</h3>
-
-<p>
-A portfolio website hosted using GitHub Pages.
-Built with HTML and CSS.
-</p>
-
-</div>
-
-</div>
+    <canvas id="valueGraph"></canvas>
 
 </section>
 
-<section>
 
-<h2>Skills</h2>
 
-<div class="skills">
+<!-- PLAYER SECTION -->
+<section class="panel">
 
-<div class="skill">Python</div>
-<div class="skill">Godot</div>
-<div class="skill">GDScript</div>
-<div class="skill">HTML</div>
-<div class="skill">CSS</div>
-<div class="skill">JavaScript</div>
-<div class="skill">GitHub</div>
+    <h2>👥 Players</h2>
+
+    <button onclick="addPlayer()">
+        Add Player
+    </button>
+
+    <div id="playersContainer">
+
+        <!-- Players appear here -->
+
+    </div>
+
+</section>
+
+
+
+
+<!-- PLAYER CONTROLS -->
+<section class="panel">
+
+<h2>💰 Economy Controls</h2>
+
+
+<select id="selectedPlayer">
+    <option>Select Player</option>
+</select>
+
+
+<br><br>
+
+
+<input 
+type="number"
+id="amountInput"
+placeholder="Amount">
+
+
+<br><br>
+
+
+<button onclick="giveMoney()">
+Give Money
+</button>
+
+
+<button onclick="removeMoney()">
+Remove Money
+</button>
+
+
+
+<h3>💳 Debt</h3>
+
+
+<button onclick="addDebt()">
+Add Debt
+</button>
+
+
+<button onclick="removeDebt()">
+Remove Debt
+</button>
+
+
+<button onclick="forgiveDebt()">
+Forgive Debt %
+</button>
+
+
+</section>
+
+
+
+
+
+
+<!-- LOAN SECTION -->
+<section class="panel">
+
+<h2>🏦 Loans</h2>
+
+
+<select id="loanPlayer">
+<option>Select Player</option>
+</select>
+
+
+<br><br>
+
+
+<input 
+type="number"
+id="loanAmount"
+placeholder="Loan Amount">
+
+
+<br><br>
+
+
+<input 
+type="number"
+id="interestRate"
+placeholder="Interest %">
+
+
+<br><br>
+
+
+<button onclick="takeLoan()">
+Take Loan
+</button>
+
+
+<button onclick="payLoan()">
+Pay Loan
+</button>
+
+
+<div id="loanList">
 
 </div>
 
-</section>
-
-<section>
-
-<h2>Example Code</h2>
-
-<p>This is where I'll showcase snippets from my projects.</p>
-
-<code>
-def hello():
-    print("Hello, World!")
-
-hello()
-</code>
 
 </section>
 
-<footer>
 
-Made by HyndaiCustomerCare-Debug • Hosted with GitHub Pages
 
-</footer>
+
+
+
+<!-- PROPERTY SECTION -->
+<section class="panel">
+
+<h2>🏠 Properties</h2>
+
+
+<input 
+id="propertySearch"
+placeholder="Search properties">
+
+
+<div id="propertyContainer">
+
+<!-- Properties appear here -->
+
+</div>
+
+
+</section>
+
+
+
+
+
+
+
+<!-- PROPERTY ACTIONS -->
+
+<section class="panel">
+
+<h2>🏷 Property Actions</h2>
+
+
+<select id="propertySelect">
+
+<option>Select Property</option>
+
+</select>
+
+
+<br><br>
+
+
+<select id="propertyOwner">
+
+<option>Select Player</option>
+
+</select>
+
+
+<br><br>
+
+
+<button onclick="giveProperty()">
+Give Property
+</button>
+
+
+<button onclick="mortgageProperty()">
+Mortgage
+</button>
+
+
+<button onclick="removeMortgage()">
+Remove Mortgage
+</button>
+
+
+<button onclick="liquidateProperty()">
+Liquidate
+</button>
+
+
+<button onclick="auctionProperty()">
+Auction
+</button>
+
+
+</section>
+
+
+
+
+
+
+<!-- SPECIAL EVENTS -->
+
+<section class="panel">
+
+<h2>🎲 Event Tools</h2>
+
+
+<button onclick="spawnPoland()">
+🇵🇱 Spawn Poland
+</button>
+
+
+<button onclick="removePoland()">
+Remove Poland
+</button>
+
+
+<button onclick="randomPlayer()">
+Random Player
+</button>
+
+
+<button onclick="showEventLog()">
+Event Log
+</button>
+
+
+</section>
+
+
+
+
+
+
+
+<!-- GAME LOG -->
+
+<section class="panel">
+
+<h2>📜 Game History</h2>
+
+
+<div id="eventLog">
+
+No events yet.
+
+</div>
+
+
+</section>
+
+
+
+
+
+<!-- SAVE SYSTEM -->
+
+<section class="panel">
+
+<h2>💾 Save</h2>
+
+
+<button onclick="saveGame()">
+Save Game
+</button>
+
+
+<button onclick="loadGame()">
+Load Game
+</button>
+
+
+<button onclick="exportGame()">
+Export Save
+</button>
+
+
+</section>
+
+
+
+</main>
+
+
+
+<script src="properties.js"></script>
+<script src="script.js"></script>
+
 
 </body>
 </html>
