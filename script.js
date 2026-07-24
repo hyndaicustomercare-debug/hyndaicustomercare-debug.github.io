@@ -936,7 +936,6 @@ property.name
 
 
 
-update();
 
 
 loadProperties();
@@ -1291,8 +1290,227 @@ player.propertyValue=total;
 
 setTimeout(()=>{
 
-
+update();
 loadProperties();
 
 
 },500);
+// ==========================
+// VALUE GRAPH SYSTEM
+// ==========================
+
+
+let valueChart;
+
+
+
+function updateGraphData(){
+
+
+    let turnData = {
+        turn: turn,
+        players:{}
+    };
+
+
+    players.forEach(player=>{
+
+
+        let netWorth =
+        player.cash +
+        player.propertyValue -
+        player.debt;
+
+
+        turnData.players[player.name] =
+        netWorth;
+
+
+    });
+
+
+    valueHistory.push(turnData);
+
+
+    drawGraph();
+
+}
+
+
+
+
+
+
+
+function drawGraph(){
+
+
+    let canvas =
+    document.getElementById(
+        "valueGraph"
+    );
+
+
+    if(!canvas)
+    return;
+
+
+
+    let labels =
+    valueHistory.map(
+        x=>"Turn "+x.turn
+    );
+
+
+
+    let datasets=[];
+
+
+
+    players.forEach((player,index)=>{
+
+
+        let values =
+        valueHistory.map(
+            x=>x.players[player.name] || 0
+        );
+
+
+        datasets.push({
+
+            label:player.name,
+
+            data:values,
+
+            borderWidth:3,
+
+            tension:0.3
+
+        });
+
+
+    });
+
+
+
+
+
+    if(valueChart){
+
+        valueChart.destroy();
+
+    }
+
+
+
+
+    valueChart =
+    new Chart(canvas, {
+
+
+        type:"line",
+
+
+        data:{
+
+
+            labels:labels,
+
+
+            datasets:datasets
+
+
+        },
+
+
+        options:{
+
+
+            responsive:true,
+
+
+            plugins:{
+
+
+                legend:{
+
+
+                    position:"bottom"
+
+
+                }
+
+
+            },
+
+
+            scales:{
+
+
+                y:{
+
+
+                    beginAtZero:false
+
+
+                }
+
+
+            }
+
+
+        }
+
+
+    });
+
+
+}
+
+
+
+
+
+
+// Save graph data
+
+
+function saveGraph(){
+
+
+localStorage.setItem(
+
+"monopolyGraph",
+
+JSON.stringify(valueHistory)
+
+);
+
+
+}
+
+
+
+
+
+function loadGraph(){
+
+
+let data =
+localStorage.getItem(
+"monopolyGraph"
+);
+
+
+
+if(data){
+
+
+valueHistory =
+JSON.parse(data);
+
+
+}
+
+
+}
