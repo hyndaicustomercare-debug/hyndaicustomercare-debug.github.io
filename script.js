@@ -517,6 +517,24 @@ document.getElementById(
 ).innerText=turn;
 
 
+updateGraphData();
+
+
+saveGraph();
+
+
+logEvent(
+"Turn "+turn+" started"
+);
+
+
+update();
+
+document.getElementById(
+"turnNumber"
+).innerText=turn;
+
+
 
 logEvent(
 "Turn "+turn+" started"
